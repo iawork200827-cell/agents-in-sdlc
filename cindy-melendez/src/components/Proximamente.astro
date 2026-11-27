@@ -2,7 +2,7 @@
 // Página de espera («Muy pronto»). Se muestra mientras `enConstruccion` sea true
 // en src/data/negocio.ts. Todos los textos salen de `negocio` y de `espera` abajo.
 import Layout from './Layout.astro';
-import { negocio, linkWhatsApp } from '../data/negocio';
+import { negocio, linkWhatsApp, redesActivas } from '../data/negocio';
 
 const espera = {
   titulo: 'Estamos preparando las llaves de tu próxima celebración.',
@@ -45,14 +45,19 @@ const espera = {
           <a class="btn" href={linkWhatsApp('Hola, vi su página. Quiero información sobre las casas para eventos.')} target="_blank" rel="noopener">
             Escríbenos por WhatsApp
           </a>
-          <a class="btn btn-claro" href={`mailto:${negocio.email}`}>Enviar correo</a>
+          <a class="btn btn-claro" href={`tel:+52${negocio.telefono.replace(/\D/g, '')}`}>Llamar</a>
+          {negocio.email && <a class="btn btn-claro" href={`mailto:${negocio.email}`}>Enviar correo</a>}
         </div>
 
-        <div class="redes">
-          <a href={negocio.redes.instagram} target="_blank" rel="noopener">Instagram</a>
-          <a href={negocio.redes.tiktok} target="_blank" rel="noopener">TikTok</a>
-          <a href={negocio.redes.facebook} target="_blank" rel="noopener">Facebook</a>
-        </div>
+        <p class="reservas">Reservas: <a href={`tel:+52${negocio.telefono.replace(/\D/g, '')}`}>{negocio.telefono}</a></p>
+
+        {
+          redesActivas.length > 0 && (
+            <div class="redes">
+              {redesActivas.map(([nombre, url]) => <a href={url} target="_blank" rel="noopener">{nombre}</a>)}
+            </div>
+          )
+        }
       </div>
 
       <div class="ilustracion" aria-hidden="true">
@@ -125,7 +130,9 @@ const espera = {
 
   .acciones { display: flex; flex-wrap: wrap; gap: 12px; }
   .btn-claro { background: transparent; color: #fff; border: 1.5px solid rgba(255, 255, 255, 0.5); }
-  .redes { display: flex; gap: 20px; margin-top: 24px; }
+  .reservas { margin: 20px 0 0; font-size: 1.05rem; }
+  .reservas a { color: #fff; font-weight: 700; text-decoration: none; letter-spacing: 0.02em; }
+  .redes { display: flex; gap: 20px; margin-top: 16px; }
   .redes a { color: #fff; opacity: 0.8; font-size: 0.92rem; }
 
   .ilustracion { position: relative; height: 440px; }

@@ -89,8 +89,8 @@ const fotosHero = [principal.fotos[0], ...principal.fotos.slice(1, 3)].filter(Bo
           <h2>Pide tu cotización</h2>
           <p class="intro">Llena los datos y se abrirá WhatsApp con tu mensaje listo para enviar. Respondemos el mismo día.</p>
           <ul class="datos-contacto">
-            <li><span>WhatsApp</span><a href={`https://wa.me/${negocio.whatsapp}`} target="_blank" rel="noopener">{negocio.telefono}</a></li>
-            <li><span>Correo</span><a href={`mailto:${negocio.email}`}>{negocio.email}</a></li>
+            <li><span>WhatsApp y teléfono</span><a href={`https://wa.me/${negocio.whatsapp}`} target="_blank" rel="noopener">{negocio.telefono}</a></li>
+            {negocio.email && <li><span>Correo</span><a href={`mailto:${negocio.email}`}>{negocio.email}</a></li>}
             <li><span>Horario</span>{negocio.horario}</li>
           </ul>
         </div>

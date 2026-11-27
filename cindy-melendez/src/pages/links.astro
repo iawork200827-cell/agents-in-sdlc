@@ -3,7 +3,7 @@
 // Su código QR general sirve para tarjetas y lonas.
 import QRCode from 'qrcode';
 import Layout from '../components/Layout.astro';
-import { enConstruccion, negocio, ruta, linkWhatsApp, casas, linkMapa, urlPublica } from '../data/negocio';
+import { enConstruccion, negocio, redesActivas, ruta, linkWhatsApp, casas, linkMapa, urlPublica } from '../data/negocio';
 
 // Durante la página de espera, /links/ manda al inicio.
 if (enConstruccion) return Astro.redirect('/');
@@ -27,13 +27,12 @@ const qr = await QRCode.toString(urlInicio, { type: 'svg', margin: 1, color: { d
       <a href={`${ruta()}#casas`}>Ver casas disponibles</a>
       <a href={linkWhatsApp('Hola, vengo de sus redes y quiero cotizar un evento.')} target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
       <a href={`${ruta()}#contacto`}>Pedir cotización</a>
-      <a href={linkMapa(casas[0].mapa)} target="_blank" rel="noopener">Cómo llegar</a>
+      <a href={`tel:+52${negocio.telefono.replace(/\D/g, '')}`}>Llamar: {negocio.telefono}</a>
+      {casas[0]?.mapa && <a href={linkMapa(casas[0].mapa)} target="_blank" rel="noopener">Cómo llegar</a>}
     </nav>
 
     <div class="redes">
-      <a href={negocio.redes.instagram} target="_blank" rel="noopener">Instagram</a>
-      <a href={negocio.redes.tiktok} target="_blank" rel="noopener">TikTok</a>
-      <a href={negocio.redes.facebook} target="_blank" rel="noopener">Facebook</a>
+      {redesActivas.map(([nombre, url]) => <a href={url} target="_blank" rel="noopener">{nombre}</a>)}
     </div>
 
     <div class="qr">

@@ -1,5 +1,5 @@
 ---
-import { negocio, ruta, linkWhatsApp } from '../data/negocio';
+import { negocio, ruta, linkWhatsApp, redesActivas } from '../data/negocio';
 
 interface Props {
   titulo?: string;
@@ -63,9 +63,7 @@ const tituloCompleto = titulo ? `${titulo} · ${negocio.nombre}` : `${negocio.no
               <p>{negocio.descripcion} · {negocio.ciudad}</p>
             </div>
             <div class="footer-links">
-              <a href={negocio.redes.instagram} target="_blank" rel="noopener">Instagram</a>
-              <a href={negocio.redes.tiktok} target="_blank" rel="noopener">TikTok</a>
-              <a href={negocio.redes.facebook} target="_blank" rel="noopener">Facebook</a>
+              {redesActivas.map(([nombre, url]) => <a href={url} target="_blank" rel="noopener">{nombre}</a>)}
               <a href={ruta('links/')}>Un solo link</a>
             </div>
           </div>

@@ -1,10 +1,11 @@
 ---
 import type { Casa } from '../data/negocio';
-import { ruta, precioTexto } from '../data/negocio';
+import { ruta, precioCasa } from '../data/negocio';
 
 interface Props { casa: Casa }
 const { casa } = Astro.props;
 const portada = casa.fotos[0];
+const precio = precioCasa(casa);
 ---
 
 <article class="casa-card" data-capacidad={casa.capacidad} data-eventos={casa.eventos.join('|')}>
@@ -21,8 +22,7 @@ const portada = casa.fotos[0];
     </ul>
     <div class="casa-pie">
       <p class="precio">
-        <strong>{precioTexto(casa.precio)}</strong>
-        {casa.precio !== null && <span> / evento</span>}
+        <span>{precio.antes}</span><strong>{precio.monto}</strong><span>{precio.despues}</span>
       </p>
       <a href={ruta(`casas/${casa.slug}/`)} class="btn btn-borde btn-sm">Ver casa</a>
     </div>
