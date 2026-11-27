@@ -1,0 +1,292 @@
+---
+// Página independiente (sin el layout de Starlight) para una inmobiliaria
+// que renta 3 casas. Todos los datos de las casas viven en el arreglo
+// `casas` de abajo: edítalo para cambiar precios, textos o fotos.
+
+const negocio = {
+  nombre: 'Casa Clara Rentas',
+  eslogan: 'Tu próximo hogar, listo para estrenar.',
+  telefono: '+52 000 000 0000',
+  whatsapp: '520000000000',
+  email: 'contacto@ejemplo.com',
+  ciudad: 'Tu ciudad',
+};
+
+const casas = [
+  {
+    id: 'casa-jardin',
+    nombre: 'Casa Jardín',
+    zona: 'Colonia Centro',
+    precio: 12500,
+    recamaras: 3,
+    banos: 2,
+    m2: 140,
+    estacionamiento: 2,
+    descripcion:
+      'Casa luminosa con jardín amplio, cocina integral y estancia a doble altura. Ideal para familias.',
+    extras: ['Jardín', 'Cocina integral', 'Mascotas permitidas'],
+    tono: '#c96f4a',
+  },
+  {
+    id: 'casa-terraza',
+    nombre: 'Casa Terraza',
+    zona: 'Lomas del Valle',
+    precio: 15800,
+    recamaras: 3,
+    banos: 2.5,
+    m2: 165,
+    estacionamiento: 2,
+    descripcion:
+      'Terraza con vista, cuarto de servicio y acabados modernos en una calle tranquila y segura.',
+    extras: ['Terraza', 'Cuarto de servicio', 'Vigilancia'],
+    tono: '#3f7d6e',
+  },
+  {
+    id: 'casa-patio',
+    nombre: 'Casa Patio',
+    zona: 'Barrio Norte',
+    precio: 9800,
+    recamaras: 2,
+    banos: 1,
+    m2: 95,
+    estacionamiento: 1,
+    descripcion:
+      'Casa compacta y acogedora con patio interior, a pasos de escuelas, comercios y transporte.',
+    extras: ['Patio', 'Cerca de transporte', 'Lista para habitar'],
+    tono: '#4a63a8',
+  },
+];
+
+const formato = new Intl.NumberFormat('es-MX', {
+  style: 'currency',
+  currency: 'MXN',
+  maximumFractionDigits: 0,
+});
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{negocio.nombre} · Casas en renta</title>
+    <meta name="description" content={`${negocio.nombre}: ${casas.length} casas en renta en ${negocio.ciudad}.`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a href="#inicio" class="logo">{negocio.nombre}</a>
+        <nav>
+          <a href="#casas">Casas</a>
+          <a href="#como-rentar">Cómo rentar</a>
+          <a href="#contacto" class="btn btn-sm">Contacto</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="inicio" class="hero">
+        <div class="wrap">
+          <p class="kicker">Casas en renta · {negocio.ciudad}</p>
+          <h1>{negocio.eslogan}</h1>
+          <p class="lead">
+            Tenemos {casas.length} casas disponibles, revisadas y listas para mudarte. Agenda una visita sin compromiso.
+          </p>
+          <div class="hero-actions">
+            <a href="#casas" class="btn">Ver casas</a>
+            <a href={`https://wa.me/${negocio.whatsapp}`} class="btn btn-ghost" target="_blank" rel="noopener">
+              Escríbenos por WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="casas" class="section">
+        <div class="wrap">
+          <h2>Nuestras casas</h2>
+          <div class="grid">
+            {
+              casas.map((casa) => (
+                <article class="card" id={casa.id}>
+                  <div class="foto" style={`--tono: ${casa.tono}`} aria-hidden="true">
+                    <svg viewBox="0 0 120 80" class="casa-icono">
+                      <path d="M20 42 L60 14 L100 42" />
+                      <rect x="30" y="40" width="60" height="32" />
+                      <rect x="54" y="52" width="12" height="20" />
+                      <rect x="36" y="48" width="12" height="10" />
+                      <rect x="72" y="48" width="12" height="10" />
+                    </svg>
+                    <span class="zona">{casa.zona}</span>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-top">
+                      <h3>{casa.nombre}</h3>
+                      <p class="precio">
+                        {formato.format(casa.precio)}
+                        <span>/mes</span>
+                      </p>
+                    </div>
+                    <ul class="datos">
+                      <li><strong>{casa.recamaras}</strong> recámaras</li>
+                      <li><strong>{casa.banos}</strong> baños</li>
+                      <li><strong>{casa.m2}</strong> m²</li>
+                      <li><strong>{casa.estacionamiento}</strong> autos</li>
+                    </ul>
+                    <p class="desc">{casa.descripcion}</p>
+                    <ul class="extras">
+                      {casa.extras.map((e) => <li>{e}</li>)}
+                    </ul>
+                    <a
+                      class="btn btn-block"
+                      href={`https://wa.me/${negocio.whatsapp}?text=${encodeURIComponent(`Hola, me interesa la ${casa.nombre}. ¿Podemos agendar una visita?`)}`}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      Agendar visita
+                    </a>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section id="como-rentar" class="section alt">
+        <div class="wrap">
+          <h2>Cómo rentar</h2>
+          <ol class="pasos">
+            <li><span>1</span><h3>Elige tu casa</h3><p>Revisa las opciones y escríbenos la que te interesa.</p></li>
+            <li><span>2</span><h3>Visítala</h3><p>Agendamos una visita en el horario que te acomode.</p></li>
+            <li><span>3</span><h3>Firma y múdate</h3><p>Revisamos documentos, firmamos contrato y recibes tus llaves.</p></li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="contacto" class="section">
+        <div class="wrap contacto">
+          <div>
+            <h2>Contacto</h2>
+            <p class="lead">¿Tienes preguntas? Te respondemos el mismo día.</p>
+            <ul class="contacto-lista">
+              <li>Teléfono: <a href={`tel:${negocio.telefono.replace(/\s/g, '')}`}>{negocio.telefono}</a></li>
+              <li>Correo: <a href={`mailto:${negocio.email}`}>{negocio.email}</a></li>
+              <li>WhatsApp: <a href={`https://wa.me/${negocio.whatsapp}`} target="_blank" rel="noopener">Enviar mensaje</a></li>
+            </ul>
+          </div>
+          <form class="form" action={`mailto:${negocio.email}`} method="post" enctype="text/plain">
+            <label>Nombre<input name="nombre" required /></label>
+            <label>Teléfono<input name="telefono" type="tel" /></label>
+            <label>
+              Casa de interés
+              <select name="casa">
+                {casas.map((c) => <option>{c.nombre}</option>)}
+              </select>
+            </label>
+            <label>Mensaje<textarea name="mensaje" rows="3"></textarea></label>
+            <button class="btn btn-block" type="submit">Enviar</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">© {new Date().getFullYear()} {negocio.nombre}. Todos los derechos reservados.</div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #faf7f2;
+    --surface: #ffffff;
+    --alt: #f1ebe1;
+    --text: #1f1b16;
+    --muted: #6b6258;
+    --line: #e4dccf;
+    --accent: #b5552f;
+    --accent-ink: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16130f;
+      --surface: #201c17;
+      --alt: #1b1814;
+      --text: #f3ede4;
+      --muted: #a89d90;
+      --line: #342e27;
+      --accent: #e0805a;
+      --accent-ink: #16130f;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, sans-serif;
+    line-height: 1.6;
+  }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; line-height: 1.15; margin: 0 0 0.5em; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 12px; }
+  .logo { font-family: Fraunces, serif; font-weight: 700; font-size: 1.2rem; color: var(--text); text-decoration: none; }
+  .nav nav { display: flex; align-items: center; gap: 18px; }
+  .nav nav a:not(.btn) { color: var(--muted); text-decoration: none; font-weight: 500; }
+  @media (max-width: 560px) { .nav nav a:not(.btn) { display: none; } }
+
+  .btn { display: inline-block; background: var(--accent); color: var(--accent-ink); padding: 12px 22px; border-radius: 999px; font-weight: 600; text-decoration: none; border: 0; cursor: pointer; font: inherit; font-weight: 600; text-align: center; }
+  .btn:hover { filter: brightness(1.08); }
+  .btn-sm { padding: 8px 16px; }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .btn-block { display: block; width: 100%; }
+
+  .hero { padding: 96px 0 72px; }
+  .kicker { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.8rem; color: var(--accent); font-weight: 600; margin: 0 0 12px; }
+  .hero h1 { font-size: clamp(2.2rem, 6vw, 4rem); max-width: 14ch; }
+  .lead { font-size: 1.15rem; color: var(--muted); max-width: 52ch; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+  .section { padding: 72px 0; }
+  .section.alt { background: var(--alt); }
+  .section h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 32px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 24px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+  .foto { position: relative; aspect-ratio: 16 / 10; background: linear-gradient(160deg, color-mix(in srgb, var(--tono) 75%, white), var(--tono)); display: grid; place-items: center; }
+  .casa-icono { width: 45%; fill: none; stroke: rgba(255,255,255,0.9); stroke-width: 2.5; stroke-linejoin: round; }
+  .zona { position: absolute; left: 12px; bottom: 12px; background: rgba(0,0,0,0.45); color: #fff; font-size: 0.8rem; padding: 4px 10px; border-radius: 999px; }
+  .card-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .card-top h3 { font-size: 1.4rem; margin: 0; }
+  .precio { margin: 0; font-weight: 600; font-size: 1.15rem; color: var(--accent); }
+  .precio span { font-weight: 400; font-size: 0.85rem; color: var(--muted); }
+  .datos { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; border-block: 1px solid var(--line); padding-block: 10px; font-size: 0.8rem; color: var(--muted); text-align: center; }
+  .datos strong { display: block; font-size: 1.05rem; color: var(--text); }
+  .desc { margin: 0; color: var(--muted); }
+  .extras { list-style: none; padding: 0; margin: 0 0 auto; display: flex; flex-wrap: wrap; gap: 6px; }
+  .extras li { background: var(--alt); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-size: 0.8rem; }
+
+  .pasos { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .pasos li { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+  .pasos span { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-weight: 700; margin-bottom: 12px; }
+  .pasos p { margin: 0; color: var(--muted); }
+
+  .contacto { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 40px; align-items: start; }
+  .contacto-lista { padding-left: 1.1em; }
+  .form { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; display: grid; gap: 14px; }
+  .form label { display: grid; gap: 6px; font-weight: 500; font-size: 0.9rem; }
+  .form input, .form select, .form textarea { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); }
+
+  .footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: 0.9rem; }
+</style>
