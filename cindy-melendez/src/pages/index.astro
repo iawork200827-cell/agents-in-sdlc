@@ -1,9 +1,9 @@
 ---
 // Paquete 1 · Esencial: página de inicio con catálogo, calendario y cotización.
-import Layout from '../../components/inmobiliaria/Layout.astro';
-import CasaCard from '../../components/inmobiliaria/CasaCard.astro';
-import Calendario from '../../components/inmobiliaria/Calendario.astro';
-import { casas, negocio, tiposDeEvento } from '../../data/inmobiliaria';
+import Layout from '../components/Layout.astro';
+import CasaCard from '../components/CasaCard.astro';
+import Calendario from '../components/Calendario.astro';
+import { casas, negocio, tiposDeEvento } from '../data/negocio';
 
 const principal = casas[0];
 const fotosHero = [principal.fotos[0], ...principal.fotos.slice(1, 3)].filter(Boolean);

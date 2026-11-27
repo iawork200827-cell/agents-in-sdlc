@@ -3,8 +3,8 @@
 // Se dibuja en el navegador para que siempre muestre el mes actual.
 // En el Paquete 3, `ocupadas` vendrá del sistema de reservas en vez del
 // archivo de datos, y al elegir un día se abrirá el resumen para apartar.
-import type { Casa } from '../../data/inmobiliaria';
-import { negocio } from '../../data/inmobiliaria';
+import type { Casa } from '../data/negocio';
+import { negocio } from '../data/negocio';
 
 interface Props { casas: Casa[] }
 const { casas } = Astro.props;

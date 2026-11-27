@@ -2,8 +2,8 @@
 // Página «un solo link»: para la biografía de Instagram, TikTok, Facebook y WhatsApp.
 // Su código QR general sirve para tarjetas y lonas.
 import QRCode from 'qrcode';
-import Layout from '../../components/inmobiliaria/Layout.astro';
-import { negocio, ruta, linkWhatsApp, casas, linkMapa, urlPublica } from '../../data/inmobiliaria';
+import Layout from '../components/Layout.astro';
+import { negocio, ruta, linkWhatsApp, casas, linkMapa, urlPublica } from '../data/negocio';
 
 const urlInicio = urlPublica();
 const qr = await QRCode.toString(urlInicio, { type: 'svg', margin: 1, color: { dark: '#231f20', light: '#ffffff' } });

@@ -2,10 +2,10 @@
 // Ficha de cada casa: galería, capacidad, lo que incluye, calendario y ubicación.
 // Cada casa tiene su propia dirección web, que es la que abre su código QR.
 import QRCode from 'qrcode';
-import Layout from '../../../components/inmobiliaria/Layout.astro';
-import Calendario from '../../../components/inmobiliaria/Calendario.astro';
-import type { Casa } from '../../../data/inmobiliaria';
-import { casas, ruta, precioTexto, linkWhatsApp, linkMapa, urlPublica } from '../../../data/inmobiliaria';
+import Layout from '../../components/Layout.astro';
+import Calendario from '../../components/Calendario.astro';
+import type { Casa } from '../../data/negocio';
+import { casas, ruta, precioTexto, linkWhatsApp, linkMapa, urlPublica } from '../../data/negocio';
 
 export function getStaticPaths() {
   return casas.map((casa) => ({ params: { slug: casa.slug }, props: { casa } }));

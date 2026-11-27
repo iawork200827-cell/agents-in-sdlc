@@ -7,7 +7,7 @@
 // de administración o una base de datos) sin rehacer el diseño.
 
 export interface Foto {
-  /** Ruta a la imagen (p. ej. '/inmobiliaria/las-palmas-1.jpg' dentro de /public). Vacía = recuadro de color. */
+  /** Ruta a la imagen (p. ej. '/fotos/las-palmas-1.jpg', guardada en public/fotos). Vacía = recuadro de color. */
   src?: string;
   etiqueta: string;
 }
@@ -112,7 +112,7 @@ export const casas: Casa[] = [
 // ── Utilidades ──────────────────────────────────────────────
 
 /** Une la ruta con el `base` del sitio (necesario en GitHub Pages). */
-export const ruta = (p = '') => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/inmobiliaria/${p}`;
+export const ruta = (p = '') => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${p}`;
 
 /** Dirección pública en el dominio definitivo (para QR y enlaces compartidos). */
 export const urlPublica = (p = '') => new URL(p, `${negocio.dominio}/`).href;
