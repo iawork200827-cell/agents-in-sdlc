@@ -5,9 +5,11 @@ import QRCode from 'qrcode';
 import Layout from '../../components/Layout.astro';
 import Calendario from '../../components/Calendario.astro';
 import type { Casa } from '../../data/negocio';
-import { casas, ruta, precioTexto, linkWhatsApp, linkMapa, urlPublica } from '../../data/negocio';
+import { casas, enConstruccion, ruta, precioTexto, linkWhatsApp, linkMapa, urlPublica } from '../../data/negocio';
 
 export function getStaticPaths() {
+  // Durante la página de espera no se publican las fichas.
+  if (enConstruccion) return [];
   return casas.map((casa) => ({ params: { slug: casa.slug }, props: { casa } }));
 }
 

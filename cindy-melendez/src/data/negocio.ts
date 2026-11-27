@@ -34,6 +34,13 @@ export interface Casa {
   color: 'verde' | 'durazno' | 'arena';
 }
 
+/**
+ * Interruptor de la página de espera.
+ * true  → el dominio muestra solo «Muy pronto» (las demás páginas no se publican).
+ * false → se publica el sitio completo (inicio, casas, calendario, links).
+ */
+export const enConstruccion = true;
+
 export const negocio = {
   nombre: 'Propuesta',
   descripcion: 'Casas para eventos sociales',

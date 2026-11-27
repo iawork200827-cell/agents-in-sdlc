@@ -30,3 +30,8 @@ npm run dev
 2. **Base directory:** `cindy-melendez` (lo demás lo toma de `netlify.toml`).
 3. En **Domain management**, agrega `cindymelendez.inmoapp.mx`.
 4. En el DNS de `inmoapp.mx`, crea un registro **CNAME**: nombre `cindymelendez` → `<tu-sitio>.netlify.app`.
+
+## Página de espera
+
+Mientras `enConstruccion` sea `true` en `src/data/negocio.ts`, el dominio muestra solo la página «Muy pronto».
+Cámbialo a `false` para publicar el sitio completo.

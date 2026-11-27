@@ -3,7 +3,10 @@
 // Su código QR general sirve para tarjetas y lonas.
 import QRCode from 'qrcode';
 import Layout from '../components/Layout.astro';
-import { negocio, ruta, linkWhatsApp, casas, linkMapa, urlPublica } from '../data/negocio';
+import { enConstruccion, negocio, ruta, linkWhatsApp, casas, linkMapa, urlPublica } from '../data/negocio';
+
+// Durante la página de espera, /links/ manda al inicio.
+if (enConstruccion) return Astro.redirect('/');
 
 const urlInicio = urlPublica();
 const qr = await QRCode.toString(urlInicio, { type: 'svg', margin: 1, color: { dark: '#231f20', light: '#ffffff' } });
