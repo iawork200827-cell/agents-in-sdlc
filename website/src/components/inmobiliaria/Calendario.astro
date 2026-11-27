@@ -1,0 +1,160 @@
+---
+// Calendario de disponibilidad (solo consulta, Paquete 1).
+// Se dibuja en el navegador para que siempre muestre el mes actual.
+// En el Paquete 3, `ocupadas` vendrá del sistema de reservas en vez del
+// archivo de datos, y al elegir un día se abrirá el resumen para apartar.
+import type { Casa } from '../../data/inmobiliaria';
+import { negocio } from '../../data/inmobiliaria';
+
+interface Props { casas: Casa[] }
+const { casas } = Astro.props;
+const datos = casas.map(({ slug, nombre, ocupadas }) => ({ slug, nombre, ocupadas }));
+---
+
+<calendario-casas class="calendario" data-casas={JSON.stringify(datos)} data-whatsapp={negocio.whatsapp}>
+  <div class="cal-cabeza">
+    <div>
+      {
+        casas.length > 1 ? (
+          <label class="cal-casa">
+            <span class="sr">Casa</span>
+            <select data-casa>
+              {casas.map((c) => <option value={c.slug}>{c.nombre}</option>)}
+            </select>
+          </label>
+        ) : (
+          <p class="muted cal-nombre">{casas[0].nombre}</p>
+        )
+      }
+      <h3 data-mes>&nbsp;</h3>
+    </div>
+    <div class="cal-flechas">
+      <button type="button" data-prev aria-label="Mes anterior">‹</button>
+      <button type="button" data-next aria-label="Mes siguiente">›</button>
+    </div>
+  </div>
+  <div class="cal-grid cal-dias" aria-hidden="true">
+    <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+  </div>
+  <div class="cal-grid" data-grid role="grid"></div>
+  <div class="cal-leyenda">
+    <span><i class="libre"></i>Disponible</span>
+    <span><i class="ocupado"></i>Ocupado</span>
+    <span><i class="elegido"></i>Tu fecha</span>
+  </div>
+  <div class="cal-accion" data-accion hidden>
+    <p data-texto></p>
+    <a class="btn btn-block" data-wa target="_blank" rel="noopener">Preguntar por esta fecha</a>
+  </div>
+</calendario-casas>
+
+<script>
+  type DatosCasa = { slug: string; nombre: string; ocupadas: string[] };
+  const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  class CalendarioCasas extends HTMLElement {
+    casas: DatosCasa[] = [];
+    casa!: DatosCasa;
+    mes = new Date();
+    elegido: string | null = null;
+
+    connectedCallback() {
+      this.casas = JSON.parse(this.dataset.casas || '[]');
+      this.casa = this.casas[0];
+      // Si quedan menos de 7 días en el mes, abre directamente el siguiente.
+      const hoy = new Date();
+      const restantes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate() - hoy.getDate();
+      this.mes = new Date(hoy.getFullYear(), hoy.getMonth() + (restantes < 7 ? 1 : 0), 1);
+      const select = this.querySelector<HTMLSelectElement>('[data-casa]');
+      select?.addEventListener('change', () => {
+        this.casa = this.casas.find((c) => c.slug === select.value) ?? this.casas[0];
+        this.elegido = null;
+        this.pintar();
+      });
+      this.querySelector('[data-prev]')!.addEventListener('click', () => this.mover(-1));
+      this.querySelector('[data-next]')!.addEventListener('click', () => this.mover(1));
+      this.pintar();
+    }
+
+    mover(n: number) {
+      this.mes = new Date(this.mes.getFullYear(), this.mes.getMonth() + n, 1);
+      this.pintar();
+    }
+
+    pintar() {
+      const hoy = iso(new Date());
+      const y = this.mes.getFullYear();
+      const m = this.mes.getMonth();
+      this.querySelector('[data-mes]')!.textContent = `${MESES[m]} ${y}`;
+      const prev = this.querySelector<HTMLButtonElement>('[data-prev]')!;
+      const ahora = new Date();
+      prev.disabled = y * 12 + m <= ahora.getFullYear() * 12 + ahora.getMonth();
+
+      const grid = this.querySelector('[data-grid]')!;
+      grid.innerHTML = '';
+      const inicio = (new Date(y, m, 1).getDay() + 6) % 7; // lunes = 0
+      for (let i = 0; i < inicio; i++) grid.appendChild(document.createElement('span'));
+      const total = new Date(y, m + 1, 0).getDate();
+      for (let d = 1; d <= total; d++) {
+        const fecha = iso(new Date(y, m, d));
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = String(d);
+        const ocupado = this.casa.ocupadas.includes(fecha);
+        const pasado = fecha < hoy;
+        btn.className = pasado ? 'pasado' : ocupado ? 'ocupado' : fecha === this.elegido ? 'elegido' : 'libre';
+        btn.disabled = pasado || ocupado;
+        btn.setAttribute('aria-label', `${d} de ${MESES[m]}: ${pasado ? 'pasado' : ocupado ? 'ocupado' : 'disponible'}`);
+        btn.addEventListener('click', () => { this.elegido = fecha; this.pintar(); });
+        grid.appendChild(btn);
+      }
+      this.actualizarAccion();
+    }
+
+    actualizarAccion() {
+      const caja = this.querySelector<HTMLElement>('[data-accion]')!;
+      if (!this.elegido) { caja.hidden = true; return; }
+      const [y, m, d] = this.elegido.split('-').map(Number);
+      const fecha = new Date(y, m - 1, d);
+      const texto = `${DIAS[fecha.getDay()]} ${d} de ${MESES[m - 1].toLowerCase()} de ${y}`;
+      const p = this.querySelector('[data-texto]')!;
+      const nombre = document.createElement('strong');
+      nombre.textContent = this.casa.nombre;
+      p.replaceChildren(nombre, ` está libre el ${texto}.`);
+      const msg = `Hola, me interesa ${this.casa.nombre} para el ${texto}. ¿Me pueden cotizar?`;
+      this.querySelector<HTMLAnchorElement>('[data-wa]')!.href = `https://wa.me/${this.dataset.whatsapp}?text=${encodeURIComponent(msg)}`;
+      caja.hidden = false;
+    }
+  }
+  customElements.define('calendario-casas', CalendarioCasas);
+</script>
+
+<style>
+  .calendario { display: block; background: var(--blanco); border: 1px solid var(--linea); border-radius: 18px; padding: 24px; }
+  .cal-cabeza { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .cal-cabeza h3 { font-size: 1.7rem; margin: 2px 0 0; }
+  .cal-nombre { margin: 0; font-size: 0.92rem; }
+  .cal-casa select { font: inherit; font-size: 0.92rem; color: var(--gris); border: 1px solid var(--linea); border-radius: 8px; padding: 4px 8px; background: var(--crema); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .cal-flechas { display: flex; gap: 8px; }
+  .cal-flechas button { width: 34px; height: 34px; border: 0; border-radius: 8px; background: var(--beige); font-size: 1.2rem; cursor: pointer; }
+  .cal-flechas button:disabled { opacity: 0.35; cursor: default; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .cal-dias span { text-align: center; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--gris); padding-bottom: 4px; }
+  .cal-grid :global(button) { aspect-ratio: 1.3; border: 0; border-radius: 10px; font: inherit; font-size: 0.95rem; cursor: pointer; }
+  .cal-grid :global(.libre) { background: var(--verde-claro); color: var(--verde); }
+  .cal-grid :global(.libre:hover) { outline: 2px solid var(--verde); }
+  .cal-grid :global(.ocupado) { background: var(--beige); color: #b3a89c; text-decoration: line-through; cursor: not-allowed; }
+  .cal-grid :global(.pasado) { background: transparent; color: #cbc2b8; cursor: default; }
+  .cal-grid :global(.elegido) { background: var(--terracota); color: #fff; font-weight: 700; }
+  .cal-leyenda { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; font-size: 0.85rem; color: var(--gris); }
+  .cal-leyenda i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .cal-leyenda .libre { background: var(--verde-claro); }
+  .cal-leyenda .ocupado { background: var(--beige); }
+  .cal-leyenda .elegido { background: var(--terracota); }
+  .cal-accion { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--linea); }
+  .cal-accion p { margin: 0 0 12px; }
+  .cal-accion[hidden] { display: none; }
+</style>

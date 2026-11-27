@@ -1,0 +1,45 @@
+---
+import type { Casa } from '../../data/inmobiliaria';
+import { ruta, precioTexto } from '../../data/inmobiliaria';
+
+interface Props { casa: Casa }
+const { casa } = Astro.props;
+const portada = casa.fotos[0];
+---
+
+<article class="casa-card" data-capacidad={casa.capacidad} data-eventos={casa.eventos.join('|')}>
+  <a href={ruta(`casas/${casa.slug}/`)} class={`casa-foto tono-${casa.color}`}>
+    {portada?.src && <img src={portada.src} alt={`${casa.nombre}: ${portada.etiqueta}`} loading="lazy" />}
+    {casa.insignia && <span class="insignia">{casa.insignia}</span>}
+  </a>
+  <div class="casa-cuerpo">
+    <h3>{casa.nombre}</h3>
+    <p class="muted zona">{casa.zona}</p>
+    <ul class="chips">
+      <li>Hasta {casa.capacidad} invitados</li>
+      {casa.destacados.map((d) => <li>{d}</li>)}
+    </ul>
+    <div class="casa-pie">
+      <p class="precio">
+        <strong>{precioTexto(casa.precio)}</strong>
+        {casa.precio !== null && <span> / evento</span>}
+      </p>
+      <a href={ruta(`casas/${casa.slug}/`)} class="btn btn-borde btn-sm">Ver casa</a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .casa-card { background: var(--blanco); border: 1px solid var(--linea); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+  .casa-card[hidden] { display: none; }
+  .casa-foto { position: relative; display: block; aspect-ratio: 16 / 9; }
+  .casa-foto img { width: 100%; height: 100%; object-fit: cover; }
+  .insignia { position: absolute; top: 14px; left: 14px; background: var(--blanco); color: var(--tinta); font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+  .casa-cuerpo { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .casa-cuerpo h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; margin: 0; }
+  .zona { margin: -6px 0 0; font-size: 0.92rem; }
+  .casa-pie { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 8px; }
+  .precio { margin: 0; }
+  .precio strong { font-size: 1.2rem; }
+  .precio span { font-size: 0.9rem; color: var(--gris); }
+</style>

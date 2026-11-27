@@ -1,0 +1,59 @@
+---
+// Página «un solo link»: para la biografía de Instagram, TikTok, Facebook y WhatsApp.
+// Su código QR general sirve para tarjetas y lonas.
+import QRCode from 'qrcode';
+import Layout from '../../components/inmobiliaria/Layout.astro';
+import { negocio, ruta, linkWhatsApp, casas, linkMapa } from '../../data/inmobiliaria';
+
+const urlInicio = new URL(ruta(), Astro.site).href;
+const qr = await QRCode.toString(urlInicio, { type: 'svg', margin: 1, color: { dark: '#231f20', light: '#ffffff' } });
+---
+
+<Layout titulo="Links" sencilla>
+  <main class="links">
+    <div class="perfil">
+      <div class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6" /></svg>
+      </div>
+      <h1>{negocio.nombre}</h1>
+      <p>{negocio.descripcion}</p>
+    </div>
+
+    <nav class="botones" aria-label="Enlaces">
+      <a class="principal" href={`${ruta()}#calendario`}>Consulta fechas libres</a>
+      <a href={`${ruta()}#casas`}>Ver casas disponibles</a>
+      <a href={linkWhatsApp('Hola, vengo de sus redes y quiero cotizar un evento.')} target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+      <a href={`${ruta()}#contacto`}>Pedir cotización</a>
+      <a href={linkMapa(casas[0].mapa)} target="_blank" rel="noopener">Cómo llegar</a>
+    </nav>
+
+    <div class="redes">
+      <a href={negocio.redes.instagram} target="_blank" rel="noopener">Instagram</a>
+      <a href={negocio.redes.tiktok} target="_blank" rel="noopener">TikTok</a>
+      <a href={negocio.redes.facebook} target="_blank" rel="noopener">Facebook</a>
+    </div>
+
+    <div class="qr">
+      <div set:html={qr} />
+      <p><strong>Escanea y consulta</strong></p>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  :global(body.sencilla) { background: var(--verde); }
+  .links { max-width: 440px; margin: 0 auto; padding: 48px 16px; color: #fff; text-align: center; }
+  .avatar { width: 88px; height: 88px; border-radius: 50%; background: var(--durazno); display: grid; place-items: center; margin: 0 auto 14px; }
+  .avatar svg { width: 40px; height: 40px; fill: none; stroke: var(--verde); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .perfil h1 { font-size: 1.8rem; margin: 0; }
+  .perfil p { margin: 4px 0 28px; opacity: 0.85; }
+  .botones { display: grid; gap: 12px; }
+  .botones a { display: block; background: var(--crema); color: var(--tinta); text-decoration: none; font-weight: 700; padding: 14px; border-radius: 12px; }
+  .botones a.principal { background: var(--terracota); color: #fff; }
+  .botones a:hover { filter: brightness(0.96); }
+  .redes { display: flex; justify-content: center; gap: 20px; margin: 24px 0 36px; }
+  .redes a { color: #fff; opacity: 0.85; font-size: 0.92rem; }
+  .qr { background: var(--blanco); color: var(--tinta); border-radius: 18px; padding: 20px; width: 200px; margin: 0 auto; }
+  .qr :global(svg) { width: 100%; height: auto; display: block; }
+  .qr p { margin: 8px 0 0; }
+</style>
