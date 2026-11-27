@@ -5,7 +5,7 @@ import QRCode from 'qrcode';
 import Layout from '../../../components/inmobiliaria/Layout.astro';
 import Calendario from '../../../components/inmobiliaria/Calendario.astro';
 import type { Casa } from '../../../data/inmobiliaria';
-import { casas, ruta, precioTexto, linkWhatsApp, linkMapa } from '../../../data/inmobiliaria';
+import { casas, ruta, precioTexto, linkWhatsApp, linkMapa, urlPublica } from '../../../data/inmobiliaria';
 
 export function getStaticPaths() {
   return casas.map((casa) => ({ params: { slug: casa.slug }, props: { casa } }));
@@ -13,7 +13,7 @@ export function getStaticPaths() {
 
 const { casa } = Astro.props as { casa: Casa };
 const tonos = ['verde', 'durazno', 'arena'];
-const urlFicha = new URL(ruta(`casas/${casa.slug}/`), Astro.site).href;
+const urlFicha = urlPublica(`casas/${casa.slug}/`);
 const qr = await QRCode.toString(urlFicha, { type: 'svg', margin: 1, color: { dark: '#231f20', light: '#ffffff' } });
 const mensaje = `Hola, me interesa ${casa.nombre} para un evento. ¿Me pueden cotizar?`;
 ---

@@ -37,6 +37,8 @@ export interface Casa {
 export const negocio = {
   nombre: 'Propuesta',
   descripcion: 'Casas para eventos sociales',
+  /** Dominio definitivo: los códigos QR apuntan aquí. */
+  dominio: 'https://cindymelendez.inmoapp.mx',
   ciudad: '[Ciudad]',
   whatsapp: '520000000000', // código de país + número, sin espacios
   telefono: '+52 000 000 0000',
@@ -111,6 +113,9 @@ export const casas: Casa[] = [
 
 /** Une la ruta con el `base` del sitio (necesario en GitHub Pages). */
 export const ruta = (p = '') => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/inmobiliaria/${p}`;
+
+/** Dirección pública en el dominio definitivo (para QR y enlaces compartidos). */
+export const urlPublica = (p = '') => new URL(p, `${negocio.dominio}/`).href;
 
 export const precioTexto = (precio: number | null) =>
   precio === null
